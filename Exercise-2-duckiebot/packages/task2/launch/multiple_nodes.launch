@@ -1,0 +1,7 @@
+<launch>
+
+  <node pkg="task2" type="01_distance.py" name="distance_node" output="screen"/>
+  <node pkg="task2" type="02_pose.py" name="robot_pose_node"  output="screen"/>
+ 
+
+</launch>
