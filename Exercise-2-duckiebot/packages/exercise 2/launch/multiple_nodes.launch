@@ -1,0 +1,12 @@
+<launch>
+
+  <node pkg="exercise2" type="position.py" name="robot_pose_node" output="screen"/> 
+  <node pkg="exercise2" type="changestates.py" name="robot_state_node" output="screen"/>  
+  <node pkg="exercise2" type="ledemitter.py" name="robot_led_node" output="screen"/> 
+  <node pkg="exercise2" type="transformation.py" name="robot_transformation_node" output="screen"/>  
+  <node pkg="exercise2" type="camera.py" name="camera_node" output="screen"/>  
+
+
+</launch>
+
+
