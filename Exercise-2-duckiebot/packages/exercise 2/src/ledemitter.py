@@ -14,10 +14,10 @@ class LEDNode(DTROS):
         self.veh_name = rospy.get_namespace().strip("/")
 
         # Proxies
-        self.setCustomPattern = rospy.ServiceProxy('/csc22945/led_emitter_node/set_custom_pattern'.format(self.veh_name), SetCustomLEDPattern)
+        self.setCustomPattern = rospy.ServiceProxy('/csc22936/led_emitter_node/set_custom_pattern'.format(self.veh_name), SetCustomLEDPattern)
             
         # Servers
-        self.server = rospy.Service('/csc22945/led_node/led_pattern'.format(self.veh_name), ChangePattern, self.callback)
+        self.server = rospy.Service('/csc22936/led_node/led_pattern'.format(self.veh_name), ChangePattern, self.callback)
         
         # Publishers
         self.pub_LED = rospy.Publisher("~led_pattern", LEDPattern, queue_size=1, dt_topic_type=TopicType.DRIVER)

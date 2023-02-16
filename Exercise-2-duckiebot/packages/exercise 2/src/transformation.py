@@ -38,7 +38,7 @@ class TransformationNode(DTROS):
         # Publishers
 		self.pub = rospy.Publisher('/pose_tf',Pose2DStamped, queue_size = 1 )
 		
-		self.name = 'csc2245/robot_data.bag'
+		self.name = 'csc22936/robot_data.bag'
 		self.bag = rosbag.Bag(self.name)
 
 		self.log("Initialized")

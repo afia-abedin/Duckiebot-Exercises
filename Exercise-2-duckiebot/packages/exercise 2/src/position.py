@@ -35,12 +35,12 @@ class PoseNode(DTROS):
 		self._radius = rospy.get_param(f'/{self.veh_name}/kinematics_node/radius', 350)
 
         # Subscribing to the wheel encoders
-		self.sub_encoder_ticks_left = rospy.Subscriber('/csc22945/left_wheel_encoder_node/tick', WheelEncoderStamped, self.cb_encoder_left,queue_size = 1 )
-		self.sub_encoder_ticks_right = rospy.Subscriber('/csc22945/right_wheel_encoder_node/tick', WheelEncoderStamped, self.cb_encoder_right, queue_size = 1 )
+		self.sub_encoder_ticks_left = rospy.Subscriber('/csc22936/left_wheel_encoder_node/tick', WheelEncoderStamped, self.cb_encoder_left,queue_size = 1 )
+		self.sub_encoder_ticks_right = rospy.Subscriber('/csc22936/right_wheel_encoder_node/tick', WheelEncoderStamped, self.cb_encoder_right, queue_size = 1 )
 
         # Publishers
 		self.pub_pose = rospy.Publisher('/pose', Pose2DStamped, queue_size = 1)
-		self.pub_coord_cmd = rospy.Publisher('/csc22945/car_cmd_switch_node/cmd', Twist2DStamped, queue_size=1)
+		self.pub_coord_cmd = rospy.Publisher('/csc22936/car_cmd_switch_node/cmd', Twist2DStamped, queue_size=1)
 
 		self.log("Initialized")
 		

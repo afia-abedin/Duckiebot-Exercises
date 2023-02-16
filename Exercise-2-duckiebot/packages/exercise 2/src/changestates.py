@@ -88,13 +88,13 @@ class StateNode(DTROS):
 		
 	
 	def turn_left(self,v):
-		self.led('pink')
+		self.led('blue')
 		self.wheel_velocity.vel_left  = -v
 		self.wheel_velocity.vel_right = v
 		self.pub_wheel_vel.publish(self.wheel_velocity)
 		
 	def turn_right(self,v):
-		self.led('pink')
+		self.led('red')
 		self.wheel_velocity.vel_left  = v
 		self.wheel_velocity.vel_right = -v
 		self.pub_wheel_vel.publish(self.wheel_velocity)
@@ -102,7 +102,7 @@ class StateNode(DTROS):
 	def forward(self,v,w):
 		global theta 
 
-		self.led('blue')
+		self.led('green')
 		if (theta < 0 ):
 			self.wheel_velocity.vel_left  = v
 			self.wheel_velocity.vel_right = v + 0.05
@@ -118,7 +118,7 @@ class StateNode(DTROS):
 		self.wheel_velocity.vel_right = 0
 		self.velocity.v  = 0
 		self.velocity.omega = 0
-		self.led('red')
+		self.led('white')
 		for i in range(50):
 			print("stopped")
 			self.pub_wheel_vel.publish(self.wheel_velocity)
@@ -129,7 +129,7 @@ class StateNode(DTROS):
 		self.velocity.v = 2
 		self.velocity.omega = -5
 		self.pub_vel.publish(self.velocity) 
-		self.led('green')
+		self.led('white')
 		
 		
 	def euclidean_dist(self,x_goal,y_goal):
