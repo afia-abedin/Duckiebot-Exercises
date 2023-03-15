@@ -1,0 +1,11 @@
+<launch>
+
+    <arg name="pkg_name" value="LAB4"/>
+
+    <node  name="duckiebot_detection_node" pkg="$(arg pkg_name)" type="duckiebot_detection_node.py" output="screen"></node>
+    <node  name="duckiebot_distance_node" pkg="$(arg pkg_name)" type="duckiebot_distance_node.py" output="screen" ></node>
+        <node name="lanefollow_node" pkg="$(arg pkg_name)" type="follower.py" output="screen" required="true">
+            <param name="veh" value="$(arg veh)" />
+        </node>
+    </group>
+</launch>
