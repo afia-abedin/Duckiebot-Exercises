@@ -26,20 +26,13 @@ from std_msgs.msg import String, Float32, Int32
 
 from math import pi
 
+
 LEFT = 50
 RIGHT = 48
 STOP = 1000 
 STOP_UNTIL = 2000
 
-# 48 - Right
-# 50 - Left
-# 56 - Straight
-# 163 - Duckwalk  stop sign
-# 207 - parking 1
-# 226 - parking 2
-# 228 - parking 3
-# 75   - parking 4
-# 227 - parking entrance
+
 
 class TagDetector(DTROS):
     def __init__(self, node_name):
@@ -48,7 +41,10 @@ class TagDetector(DTROS):
         self.image_sub = rospy.Subscriber(f'/{name}/camera_node/image/compressed', CompressedImage, self.rcv_img,  queue_size = 1)  
         self.image_pub = rospy.Publisher(f'/{name}/digit_detector_node/image/compressed', CompressedImage,  queue_size = 1) 
         self.id_pub = rospy.Publisher("/" + name + "/april_tag_id", Int32, queue_size=1)
-    
+        
+        
+        
+        
         
         self.img_queue = deque(maxlen=1)
         self.rectify_alpha = rospy.get_param("~rectify_alpha", 0.0)
@@ -67,13 +63,10 @@ class TagDetector(DTROS):
         self.decode_sharpening = rospy.get_param("~decode_sharpening", 0.25)
         self.tag_size = rospy.get_param("~tag_size", 0.065)
         
-        
-
-        # self.tag_id_uofa = [93, 94, 200, 201]  # very outer 
         self.tag_id_lt = [50]
         self.tag_id_rt = [48]
-        self.tag_id_stop = [163, 38, 21]   # 21 is in grad room
-        self.turning_tags = [48, 50, 56, 163, 21]
+        self.tag_id_stop = [163, 38, 21]   
+        self.turning_tags = [48, 50, 56, 163, 21, 38]
         
         self.img_queue = deque(maxlen=1)
 
@@ -86,7 +79,7 @@ class TagDetector(DTROS):
             decode_sharpening=self.decode_sharpening,) 
         
 
-        self.dist_threshold = 0.6  # 0.6
+        self.dist_threshold = 0.4  # 0.4
         self.next_intersection = -1
         self.stage3_done = False 
         # self.d = 100
@@ -105,9 +98,6 @@ class TagDetector(DTROS):
     def run(self): 
         rate = rospy.Rate(5) # 5Hz== 10
         while not rospy.is_shutdown():
-            # if self.next_intersection == 1234:
-            #     self.id_pub.publish(9999)
-            #     rospy.signal_shutdown("Done")
             if self.img_queue:
                 img = self.img_queue.popleft()  
                 self.process_img(img)
@@ -115,7 +105,6 @@ class TagDetector(DTROS):
     
     
     def process_img(self, img):
-        # rospy.loginfo(f'd: {self.d}')
         min_dist = -1
         target_size = self.detect_intersection(img)
         
@@ -131,19 +120,13 @@ class TagDetector(DTROS):
             # rospy.loginfo(f'target size1: {target_size2}')
                 
             if target_size > 0.2 and self.next_intersection != -1:
-                # rospy.loginfo(f'At intersection, target size: {target_size}')
                 self.id_pub.publish(self.next_intersection)
                 self.next_intersection = -1
             elif blue_ahead > 0.2 and self.next_intersection == 163:  # 0.15
-                # rospy.loginfo('stops')
                 self.id_pub.publish(STOP_UNTIL)
-                # rospy.loginfo('stops2')
                 if duck_ahead < 0.07:
-                    # rospy.loginfo('begin publish 1')
                     self.id_pub.publish(1)  # driving
-                    # rospy.loginfo('after publish 1')
                     self.next_intersection = -1
-                    # self.d = 100
                 
             else:
                 undistorted_img = self.undistort_img(img)
@@ -168,11 +151,10 @@ class TagDetector(DTROS):
                         min_tag_id = tag_id 
                         min_tag = tag
 
-                if min_tag_id != -1: # We next_interhave the tag with minimum distance
-                    # self.d = min_dist
+                if min_tag_id != -1: 
                     if self.next_intersection == -1 and min_tag_id in self.turning_tags:
                         self.next_intersection = min_tag_id
-                        # rospy.loginfo(f'Intersection set to: {min_tag_id}')
+                        rospy.loginfo(f'Intersection set to: {min_tag_id}')
                             
             self.b = 0
             self.d = 0        
@@ -187,19 +169,11 @@ class TagDetector(DTROS):
         upper_orange = np.array([50,255, 255])
         mask = cv2.inRange(hsv, lower_orange, upper_orange)
 
-        # # # # mask = mask0 + mask1
-        # # # # target_size = np.sum(mask/255.) / mask.size
-        
-        # mask_or = cv2.bitwise_or(mask0, mask1)
-        # target_size1 = np.sum(mask_or/255.) / mask_or.size
         
         target_size = np.sum(mask/255.) / mask.size
-        # rospy.loginfo(f'orange mask:{target_size}')
+    
         return target_size
-        # if target_size > 0.1:
-        #     return True
-        # else:
-        #     return False
+      
 
 
     def detect_ducks(self, img, dist):
@@ -211,7 +185,7 @@ class TagDetector(DTROS):
         detect = False
         DEBUG = True
         
-        # h, w, d = img.shape
+       
         
         # x1 = int((0.25 + (1-dist)/8)*h)
         # x2 = int((1-dist)*h)
@@ -227,11 +201,6 @@ class TagDetector(DTROS):
         else:
             detect =  False
         
-        # if DEBUG:
-        #     rect_img_msg = self.bridge.cv2_to_compressed_imgmsg(img)
-        #     self.image_pub.publish(rect_img_msg)
-        
-        # rospy.loginfo(f"detect: {detect}")
         return True
         
     def detect_intersection(self, img):
@@ -246,7 +215,7 @@ class TagDetector(DTROS):
         upper_red = np.array([180,255,255])
         mask1 = cv2.inRange(hsv, lower_red, upper_red)
 
-        # join my masks
+        # join masks
         mask = mask0+mask1
         target_size = np.sum(mask/255.) / mask.size
         return target_size
@@ -264,12 +233,9 @@ class TagDetector(DTROS):
         target_size = np.sum(mask/255.) / mask.size
 
         
-        # rospy.loginfo(f'blue mask:{target_size}')
+        
         return target_size
-        # if target_size > 0.2:
-        #     return True
-        # else:
-        #     return False
+       
 
 
     def undistort_img(self, img):
@@ -294,7 +260,7 @@ class TagDetector(DTROS):
         self._mapx, self._mapy = cv2.initUndistortRectifyMap(K, D, None, rect_K, (W, H), cv2.CV_32FC1)
 
         self._map_xy_set = True
-        # rospy.loginfo(f'map_x: {self._mapx} \n\n map_y: {self._mapy}')
+        
         
 
     def load_camera_info(self, filename: str) -> CameraInfo:

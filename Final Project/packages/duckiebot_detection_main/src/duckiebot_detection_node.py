@@ -72,16 +72,7 @@ class DuckiebotDetectionNode(DTROS):
         self.simple_blob_detector = cv2.SimpleBlobDetector_create(params)
 
     def cb_image(self, image_msg):
-        """
-        Callback for processing a image which potentially contains a back pattern. Processes the image only if
-        sufficient time has passed since processing the previous image (relative to the chosen processing frequency).
-
-        The pattern detection is performed using OpenCV's `findCirclesGrid <https://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html?highlight=solvepnp#findcirclesgrid>`_ function.
-
-        Args:
-            image_msg (:obj:`sensor_msgs.msg.CompressedImage`): Input image
-
-        """
+       
         now = rospy.Time.now()
         if now - self.last_stamp < self.publish_duration:
             return
@@ -99,17 +90,13 @@ class DuckiebotDetectionNode(DTROS):
             blobDetector=self.simple_blob_detector,
         )
 
-        # if the pattern is detected, cv2.findCirclesGrid returns a non-zero result, otherwise it returns 0
-        # vehicle_detected_msg_out.data = detection > 0
-        # self.pub_detection.publish(vehicle_detected_msg_out)
+      
 
         vehicle_centers_msg_out.header = image_msg.header
         vehicle_centers_msg_out.detection.data = detection > 0
         detection_flag_msg_out.header = image_msg.header
         detection_flag_msg_out.data = detection > 0
 
-        # if the detection is successful add the information about it,
-        # otherwise publish a message saying that it was unsuccessful
         avg_x = 0
         if detection > 0:
             points_list = []

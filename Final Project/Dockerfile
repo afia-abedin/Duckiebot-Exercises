@@ -1,7 +1,7 @@
 # parameters
-ARG REPO_NAME="LAB_4"
+ARG REPO_NAME="project_main"
 ARG DESCRIPTION="StartCode"
-ARG MAINTAINER="Zepeng Xiao"
+ARG MAINTAINER=""
 # pick an icon from: https://fontawesome.com/v4.7.0/icons/
 ARG ICON="cube"
 

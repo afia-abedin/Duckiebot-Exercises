@@ -76,7 +76,7 @@ class ParkingNode(DTROS):
             decode_sharpening=self.decode_sharpening,) 
         
 
-        self.parking_spot = 2
+        self.parking_spot = 4
         self.state = "STRAIGHT"
         self.turns = ["D", "Turn1", "Turn2", "Turn3", "Turn4"]
         self.turn_ids = [0, 207, 226, 228, 75]

@@ -17,20 +17,6 @@ DEBUG = False
 ENGLISH = False
 STOP_FLAG = False
 
-# stage 1
-# 48 - Right
-# 50 - Left
-# 56 - Straight
-
-# stage 2
-# 163 - Duckwalk
-
-# stage 3
-# 207 - parking 1
-# 226 - parking 2
-# 228 - parking 3
-# 75   - parking 4
-# 227 - parking entrance  detect that to do stage 3
 
 
 
@@ -99,10 +85,10 @@ class LaneFollowNode(DTROS):
         self.bias = 0 # -0.09
         self.eng = False
 
-        # Wait a little while before sending motor commands
+    
         rospy.Rate(0.20).sleep()
 
-        # Shutdown hook
+      
         rospy.on_shutdown(self.hook)
         
 
@@ -135,7 +121,7 @@ class LaneFollowNode(DTROS):
             self.lt_initial_set = True
             self.lt_initial_val = msg.data
         self.lt = msg.data - self.lt_initial_val
-        # self.lt_dist = (2 * pi * self.r * self.lt_val) / 135
+        
         
     def task_rotation(self, rotation_amount, omega_amount, stopping_offset):
         rospy.loginfo("Starting rotation task..")
@@ -297,8 +283,7 @@ class LaneFollowNode(DTROS):
                     self.check = True
                     
                 self.proportional = cx - int(crop_width / 2) + self.offset
-                
-                # rospy.loginfo(f'offset: {self.offset}; proportional: {self.proportional}')
+               
                 if DEBUG:
                     cv2.drawContours(crop, contours, max_idx, (0, 255, 0), 3)
                     cv2.circle(crop, (cx, cy), 7, (0, 0, 255), -1)

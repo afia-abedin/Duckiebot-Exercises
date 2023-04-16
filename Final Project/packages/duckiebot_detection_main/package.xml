@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>duckiebot_detection</name>
+  <name>duckiebot_detection_main</name>
   <version>1.0.0</version>
   <description>Start Code for Exercise-4</description>
 

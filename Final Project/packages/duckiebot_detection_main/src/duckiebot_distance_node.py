@@ -26,17 +26,16 @@ class DuckiebotDistanceNode(DTROS):
         super(DuckiebotDistanceNode, self).__init__(node_name=node_name, node_type=NodeType.PERCEPTION)
         self.host = str(os.environ['VEHICLE_NAME'])
 	
-	    #Distance between the centers of the circles on the back
+	    #Distance between the centers of the circle's back
         self.distance_between_centers = 0.0125
         
         #Maximum tolerable reprojection error.
-        #If a reprojection error higher than that is observed. May require some actions
         self.max_reproj_pixelerror_pose_estimation = 1.5
 
 
         self.bridge = CvBridge()
 
-        # these will be defined on the first call to calc_circle_pattern
+      
         self.last_calc_circle_pattern = None
         self.circlepattern_dist = None
         self.circlepattern = None
@@ -133,8 +132,7 @@ class DuckiebotDistanceNode(DTROS):
             width (`int`): number of columns in the pattern
 
         """
-        # check if the version generated before is still valid, if not, or first time called, create
-
+       
         if self.last_calc_circle_pattern is None or self.last_calc_circle_pattern != (height, width):
             self.circlepattern_dist = self.distance_between_centers
             self.circlepattern = np.zeros([height * width, 3])
